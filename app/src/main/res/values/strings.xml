@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Puzzle</string>
+    <string name="ordena_el_puzzle">"Ordena el Puzzle "</string>
 </resources>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".puzzle">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textoNombre"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imagenes"
+        android:layout_below="@+id/textoNombre"
+        android:layout_centerVertical="true">
+        <ImageView
+        android:id="@+id/imagen1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true" />
+
+        <ImageView
+            android:id="@+id/imagen2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen1"/>
+
+        <ImageView
+            android:id="@+id/imagen3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen2"/>
+
+        <ImageView
+            android:id="@+id/imagen4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen3"/>
+
+        <ImageView
+            android:id="@+id/imagen5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_below="@id/imagen1"/>
+
+        <ImageView
+            android:id="@+id/imagen6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen5"/>
+
+        <ImageView
+            android:id="@+id/imagen7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen6"/>
+
+        <ImageView
+            android:id="@+id/imagen8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@tools:sample/avatars"
+            android:layout_toRightOf="@+id/imagen7"/>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/puntuacion"
+        android:layout_below="@+id/imagenes"/>
+
+
+
+</RelativeLayout>
