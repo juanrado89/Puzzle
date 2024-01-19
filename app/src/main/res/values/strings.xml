@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Puzzle</string>
     <string name="ordena_el_puzzle">"Ordena el Puzzle "</string>
+    <string name="numero_de_intentos">"Numero de intentos: "</string>
 </resources>
