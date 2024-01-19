@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import dm2e.juanalberto.puzzle.puzzles.puzzle;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         nombre = findViewById(R.id.IntNombre);
-        Intent inicio = new Intent(this,puzzle.class);
+        Intent inicio = new Intent(this, puzzle.class);
 
         iniciar = findViewById(R.id.inicio);
         iniciar.setOnClickListener(new View.OnClickListener() {

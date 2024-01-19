@@ -1,9 +1,7 @@
-package dm2e.juanalberto.puzzle;
+package dm2e.juanalberto.puzzle.puzzles;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,13 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+
+import dm2e.juanalberto.puzzle.R;
+import dm2e.juanalberto.puzzle.datos.UsuariosDatos;
+import dm2e.juanalberto.puzzle.models.UsuarioPuzzle;
 
 public class puzzle extends AppCompatActivity {
 
@@ -56,6 +54,17 @@ public class puzzle extends AppCompatActivity {
                     findViewById(R.id.imagen7),
                     findViewById(R.id.imagen8)
             };
+            Integer[] fotos = {
+                    R.drawable.imagen1,
+                    R.drawable.imagen2,
+                    R.drawable.imagen3,
+                    R.drawable.imagen4,
+                    R.drawable.imagen5,
+                    R.drawable.imagen6,
+                    R.drawable.imagen7,
+                    R.drawable.imagen8
+            };
+            List<Integer> listaImagenes = Arrays.asList(fotos);
 
             for (int i = 0; i < imagenes.length; i++) {
                 Bitmap bitmap = savedInstanceState.getParcelable("drawable_" + i);
@@ -70,9 +79,55 @@ public class puzzle extends AppCompatActivity {
             }
             for(int i = 0; i < imagenes.length; i++){
                 gridLayout.removeView(imagenes[i]);
+                Drawable drawable = ResourcesCompat.getDrawable(getResources(), listaImagenes.get(i), null);
+                imagenes[i].setTag(drawable);
                 gridLayout.addView(imagenes[i], i);
+
             }
 
+        }else{
+            ImageView[] imagenes = {
+                    findViewById(R.id.imagen1),
+                    findViewById(R.id.imagen2),
+                    findViewById(R.id.imagen3),
+                    findViewById(R.id.imagen4),
+                    findViewById(R.id.imagen5),
+                    findViewById(R.id.imagen6),
+                    findViewById(R.id.imagen7),
+                    findViewById(R.id.imagen8)
+            };
+
+            Integer[] fotos = {
+                    R.drawable.imagen1,
+                    R.drawable.imagen2,
+                    R.drawable.imagen3,
+                    R.drawable.imagen4,
+                    R.drawable.imagen5,
+                    R.drawable.imagen6,
+                    R.drawable.imagen7,
+                    R.drawable.imagen8
+            };
+            List<Integer> listaImagenes = Arrays.asList(fotos);
+            for(int i = 0; i < imagenes.length;i++){
+                Drawable drawable = ResourcesCompat.getDrawable(getResources(), listaImagenes.get(i), null);
+                imagenes[i].setTag(drawable);
+            }
+
+            Collections.shuffle(listaImagenes);
+
+            for (int i = 0; i < listaImagenes.size(); i++) {
+                Drawable drawable = ResourcesCompat.getDrawable(getResources(), listaImagenes.get(i), null);
+                imagenes[i].setImageDrawable(drawable);
+                imagenes[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onImageClick((ImageView) view);
+
+                    }
+                });
+            }
+
+            result.setText(getString(R.string.numero_de_intentos) + contador);
         }
 
         nom = findViewById(R.id.textoNombre);
@@ -82,48 +137,7 @@ public class puzzle extends AppCompatActivity {
         nom.setText(getString(R.string.ordena_el_puzzle) + nombre);
 
 
-        ImageView[] imagenes = {
-                findViewById(R.id.imagen1),
-                findViewById(R.id.imagen2),
-                findViewById(R.id.imagen3),
-                findViewById(R.id.imagen4),
-                findViewById(R.id.imagen5),
-                findViewById(R.id.imagen6),
-                findViewById(R.id.imagen7),
-                findViewById(R.id.imagen8)
-        };
 
-        Integer[] fotos = {
-                R.drawable.imagen1,
-                R.drawable.imagen2,
-                R.drawable.imagen3,
-                R.drawable.imagen4,
-                R.drawable.imagen5,
-                R.drawable.imagen6,
-                R.drawable.imagen7,
-                R.drawable.imagen8
-        };
-        List<Integer> listaImagenes = Arrays.asList(fotos);
-        for(int i = 0; i < imagenes.length;i++){
-            Drawable drawable = ResourcesCompat.getDrawable(getResources(), listaImagenes.get(i), null);
-            imagenes[i].setTag(drawable);
-        }
-
-        Collections.shuffle(listaImagenes);
-
-        for (int i = 0; i < listaImagenes.size(); i++) {
-            Drawable drawable = ResourcesCompat.getDrawable(getResources(), listaImagenes.get(i), null);
-            imagenes[i].setImageDrawable(drawable);
-            imagenes[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onImageClick((ImageView) view);
-
-                }
-            });
-        }
-
-        result.setText(getString(R.string.numero_de_intentos) + contador);
 
 
     }
@@ -178,7 +192,24 @@ public class puzzle extends AppCompatActivity {
             imagenSeleccionada2 = null;
             if(verificarCoincidenciaDrawables()){
                 Toast mensaje = Toast.makeText(getApplicationContext(),"Has ganado!!!", Toast.LENGTH_LONG);
+                UsuariosDatos us = new UsuariosDatos(this,"puzzle_uno");
+                Intent inicio = getIntent();
+                String nombre = inicio.getStringExtra("nombre");
+                UsuarioPuzzle usuario = new UsuarioPuzzle(0,nombre,contador);
+                List<UsuarioPuzzle> comprobacion = us.getUsuarioByName(usuario);
+                if(comprobacion.isEmpty()){
+                    us.insertarUsuarios(nombre,contador);
+                }else{
+                    if(comprobacion.get(0).getPuntuacion() > contador){
+                        usuario.setId(comprobacion.get(0).getId());
+                        us.actualizarPuntuacion(usuario);
+                    }
+                }
                 mensaje.show();
+                Intent puzzle2 = new Intent(this, PuzzleDos.class);
+                puzzle2.setAction("envio.nombre");
+                puzzle2.putExtra("nombre",nombre);
+                startActivity(puzzle2);
             }
         }
     }
@@ -202,12 +233,11 @@ public class puzzle extends AppCompatActivity {
         };
 
         for (ImageView imageView : imagenes) {
-            Drawable drawable = imageView.getDrawable();
-            Drawable comprobacion = (Drawable) imageView.getTag();
+            Bitmap bitmap = drawableToBitmap(imageView.getDrawable());
+            Bitmap comprobacion = drawableToBitmap((Drawable) imageView.getTag());
 
-            if (drawable != null && comprobacion != null) {
-
-                if (!drawable.getConstantState().equals(comprobacion.getConstantState())) {
+            if (bitmap != null && comprobacion != null) {
+                if (!bitmap.sameAs(comprobacion)) {
                     return false;
                 }
             } else {
