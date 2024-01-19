@@ -5,7 +5,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -31,18 +34,54 @@ public class puzzle extends AppCompatActivity {
 
     private ImageView imagenSeleccionada1;
     private ImageView imagenSeleccionada2;
+    private static final String CONTADOR= "contador";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle);
 
-        nom = findViewById(R.id.textoNombre);
+        gridLayout = findViewById(R.id.imagenes);
         result = findViewById(R.id.puntuacion);
+
+        if (savedInstanceState != null) {
+            contador = savedInstanceState.getInt(CONTADOR);
+            result.setText(getString(R.string.numero_de_intentos) + contador);
+            ImageView[] imagenes = {
+                    findViewById(R.id.imagen1),
+                    findViewById(R.id.imagen2),
+                    findViewById(R.id.imagen3),
+                    findViewById(R.id.imagen4),
+                    findViewById(R.id.imagen5),
+                    findViewById(R.id.imagen6),
+                    findViewById(R.id.imagen7),
+                    findViewById(R.id.imagen8)
+            };
+
+            for (int i = 0; i < imagenes.length; i++) {
+                Bitmap bitmap = savedInstanceState.getParcelable("drawable_" + i);
+                imagenes[i].setImageBitmap(bitmap);
+
+                imagenes[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onImageClick((ImageView) view);
+                    }
+                });
+            }
+            for(int i = 0; i < imagenes.length; i++){
+                gridLayout.removeView(imagenes[i]);
+                gridLayout.addView(imagenes[i], i);
+            }
+
+        }
+
+        nom = findViewById(R.id.textoNombre);
+
         Intent inicio = getIntent();
         String nombre = inicio.getStringExtra("nombre");
         nom.setText(getString(R.string.ordena_el_puzzle) + nombre);
 
-        gridLayout = findViewById(R.id.imagenes);
+
         ImageView[] imagenes = {
                 findViewById(R.id.imagen1),
                 findViewById(R.id.imagen2),
@@ -87,6 +126,41 @@ public class puzzle extends AppCompatActivity {
         result.setText(getString(R.string.numero_de_intentos) + contador);
 
 
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(CONTADOR, contador);
+
+        ImageView[] imagenes = {
+                findViewById(R.id.imagen1),
+                findViewById(R.id.imagen2),
+                findViewById(R.id.imagen3),
+                findViewById(R.id.imagen4),
+                findViewById(R.id.imagen5),
+                findViewById(R.id.imagen6),
+                findViewById(R.id.imagen7),
+                findViewById(R.id.imagen8)
+        };
+
+        for (int i = 0; i < imagenes.length; i++) {
+            Drawable drawable = imagenes[i].getDrawable();
+            outState.putParcelable("drawable_" + i, drawableToBitmap(drawable));
+        }
+    }
+    private Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        int width = drawable.getIntrinsicWidth();
+        int height = drawable.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     private void onImageClick(ImageView imageView) {
